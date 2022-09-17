@@ -10,8 +10,7 @@ def create_candidates(n = 1000000):
             candidates.append(x)
     return candidates
 
-
-def fermats_theorum(candidates = []):
+def fermats_theorem(candidates = []):
     primes = []
     n = 10
 
@@ -42,6 +41,11 @@ def generate_e(phi_):
 
     return list_of_e
 
+#M is the message to encrypt
+#N and e are the public key
+def encrypt(M, N, e):
+    return pow(M, e, N)
+
     
 
 
@@ -50,7 +54,7 @@ def generate_e(phi_):
 candidates = create_candidates()
 
 #Assign our return variables to p and q as they should be
-p, q = fermats_theorum(candidates)
+p, q = fermats_theorem(candidates)
 print('The value of p is: ', p, 'The value of q is: ', q)
 
 N = p*q
