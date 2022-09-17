@@ -63,7 +63,5 @@ phi = (p-1)*(q-1)
 e = generate_e(phi)
 print('e is:', e)
 
+
 public_key = [N, e]
-
-#test again
-
