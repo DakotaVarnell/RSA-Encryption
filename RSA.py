@@ -29,8 +29,40 @@ def fermats_theorum(candidates = []):
     q = primes[1]
     return(p, q)
 
+#creates N
+def createN(p,q):
+    n = p *q
+    return n
 
-    
+#creates what Phi would be
+def createPhi(p,q):
+    phi = (p -1)*(q-1) 
+    return phi
+
+#Euclid's algorithm for finding gcd
+def eagcd(a, b):
+    if b == 0:
+        return a
+    else:
+        return eagcd(b, a % b)
+
+#Euclid's extended algorithm that uses mod inverse
+def eeagcd(a, b):
+    if a ==0:
+        return (b, 0, 1)
+        (g, x1, y1) = eeagcd(b % a, a)
+        x = y1 - (b//a) * x1
+        y = x1
+
+        return g,x,y
+
+#Mod inverse
+def modular_inverse(a,b):
+    g,x,y = eeagcd(a,b)
+    if g != 1:
+        raise Exception("No modular inverse")
+    else: 
+        return x % b    
 
 
 
@@ -40,5 +72,7 @@ candidates = create_candidates()
 #Assign our return variables to p and q as they should be
 p, q = fermats_theorum(candidates)
 print(p, q)
+n = createN(p,q)
+phi = createPhi(p,q)
 print("Test")
 
