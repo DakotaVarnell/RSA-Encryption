@@ -48,13 +48,13 @@ def eagcd(a, b):
 
 #Euclid's extended algorithm that uses mod inverse
 def eeagcd(a, b):
-    if a ==0:
-        return (b, 0, 1)
-        (g, x1, y1) = eeagcd(b % a, a)
-        x = y1 - (b//a) * x1
-        y = x1
+    if a == 0:
+            return (b, 0, 1)
+    (g, x1, y1) = eeagcd(b % a, a)
+    x = y1 - (b//a) * x1
+    y = x1
 
-        return g,x,y
+    return g,x,y
 
 #Mod inverse
 def modular_inverse(a,b):
@@ -64,6 +64,23 @@ def modular_inverse(a,b):
     else: 
         return x % b    
 
+#Uses eagcd to create a public key
+def create_public_key(phi):
+    e = random.randint(2,phi)
+    i = eagcd(phi,e)
+    while i != 1:
+        e = random.randint(2,phi)
+        i = eagcd(phi, e)
+    return e
+
+#uses eeagcd to create the private key
+def create_Private_Key(phi,e):
+    d = modular_inverse(e,phi)
+    return d
+
+def getString():
+    Sinput = input("Please type in a string: ")
+    return Sinput
 
 
 #Create our list of possible candidate prime numbers
