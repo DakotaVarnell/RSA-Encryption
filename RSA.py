@@ -54,6 +54,7 @@ def encrypt(M, N, e):
 candidates = create_candidates()
 
 #Assign our return variables to p and q as they should be
+
 p, q = fermats_theorem(candidates)
 print('The value of p is: ', p, 'The value of q is: ', q)
 
@@ -62,6 +63,5 @@ phi = (p-1)*(q-1)
 
 e = generate_e(phi)
 print('e is:', e)
-
 
 public_key = [N, e]
