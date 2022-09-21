@@ -41,29 +41,36 @@ def generate_e(phi_):
 
     return list_of_e
 
-#M is the message to encrypt
+#M is the message (in ASCII) to encrypt
 #N and e are the public key
 def encrypt(M, N, e):
     return pow(M, e, N)
+
+#this takes each individual character and finds its ASCII correspondence
+def message_to_ascii(message_in_char):
+    for i in message_in_char:
+        ascii[i] = ord(message_in_char[i])
+
+    return ascii
 
     
 
 
 
-#Create our list of possible candidate prime numbers
-candidates = create_candidates()
+# #Create our list of possible candidate prime numbers
+# candidates = create_candidates()
 
-#Assign our return variables to p and q as they should be
-p, q = fermats_theorem(candidates)
-print('The value of p is: ', p, 'The value of q is: ', q)
+# #Assign our return variables to p and q as they should be
+# p, q = fermats_theorem(candidates)
+# print('The value of p is: ', p, 'The value of q is: ', q)
 
-N = p*q
-phi = (p-1)*(q-1)
+# N = p*q
+# phi = (p-1)*(q-1)
 
-e = generate_e(phi)
-print('e is:', e)
+# e = generate_e(phi)
+# print('e is:', e)
 
-public_key = [N, e]
+# public_key = [N, e]
 
-#test again
-
+h = message_to_ascii('Hello')
+print(h)
