@@ -10,8 +10,7 @@ def create_candidates(n = 1000000):
             candidates.append(x)
     return candidates
 
-
-def fermats_theorum(candidates = []):
+def fermats_theorem(candidates = []):
     primes = []
     n = 10
 
@@ -29,6 +28,23 @@ def fermats_theorum(candidates = []):
     q = primes[1]
     return(p, q)
 
+#the requirements for e are that it must be less than phi and it must be relatively prime to phi
+def generate_e(phi_):
+    list_of_e = [] #a list of possible values for e
+    while len(list_of_e) < 1:
+        for i in range(20): #20 chances at finding phi - we can change this to find only one value later on
+            x = random.randint(2, phi-1)
+            if math.gcd(x, phi) == 1: #if e and phi are relatively prime, they're gcd must be 1
+                list_of_e.append(x)
+            else:
+                continue
+
+    return list_of_e
+
+#M is the message to encrypt
+#N and e are the public key
+def encrypt(M, N, e):
+    return pow(M, e, N)
 
     
 
@@ -38,7 +54,14 @@ def fermats_theorum(candidates = []):
 candidates = create_candidates()
 
 #Assign our return variables to p and q as they should be
-p, q = fermats_theorum(candidates)
-print(p, q)
-print("Test Dakota1")
 
+p, q = fermats_theorem(candidates)
+print('The value of p is: ', p, 'The value of q is: ', q)
+
+N = p*q
+phi = (p-1)*(q-1)
+
+e = generate_e(phi)
+print('e is:', e)
+
+public_key = [N, e]
