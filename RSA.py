@@ -29,48 +29,55 @@ def fermats_theorem(candidates = []):
     return(p, q)
 
 #the requirements for e are that it must be less than phi and it must be relatively prime to phi
-def generate_e(phi_):
-    list_of_e = [] #a list of possible values for e
-    while len(list_of_e) < 1:
-        for i in range(20): #20 chances at finding phi - we can change this to find only one value later on
+def generate_e(phi):
+        for i in range(1):
             x = random.randint(2, phi-1)
             if math.gcd(x, phi) == 1: #if e and phi are relatively prime, they're gcd must be 1
-                list_of_e.append(x)
+                e_ = x
             else:
                 continue
 
-    return list_of_e
+        return e_
 
 #M is the message (in ASCII) to encrypt
 #N and e are the public key
-def encrypt(M, N, e):
-    return pow(M, e, N)
+def encrypt(M, e, N):
+    encryted_message = []
+    for i in M:
+        encryted_message.append(pow(i, e, N))
+
+    return encryted_message
+        
 
 #this takes each individual character and finds its ASCII correspondence
+#it then adds it to the list message_in_ascii
 def message_to_ascii(message_in_char):
+    message_in_ascii = []
+    message_in_char = message_in_char.upper()
     for i in message_in_char:
-        ascii[i] = ord(message_in_char[i])
+        message_in_ascii.append(ord(i))
 
-    return ascii
+    return message_in_ascii
 
     
 
 
 
-# #Create our list of possible candidate prime numbers
-# candidates = create_candidates()
+#Create our list of possible candidate prime numbers
+candidates = create_candidates()
 
-# #Assign our return variables to p and q as they should be
-# p, q = fermats_theorem(candidates)
-# print('The value of p is: ', p, 'The value of q is: ', q)
+#Assign our return variables to p and q as they should be
+p, q = fermats_theorem(candidates)
+print('The value of p is: ', p, 'The value of q is: ', q)
 
-# N = p*q
-# phi = (p-1)*(q-1)
+N = p*q
+phi = (p-1)*(q-1)
 
-# e = generate_e(phi)
-# print('e is:', e)
+e = generate_e(phi)
+print('e is:', e)
 
-# public_key = [N, e]
+public_key = [N, e]
 
 h = message_to_ascii('Hello')
 print(h)
+print(encrypt(h, e, N))
