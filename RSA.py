@@ -41,6 +41,16 @@ def generate_e(phi_):
 
     return list_of_e
 
+
+def choose_option(choice):
+    if choice is 1:
+        print(str(1))
+    elif choice is 2:
+        print(str(2))
+    elif choice is 3:
+        print(str(3))
+    
+
 #M is the message to encrypt
 #N and e are the public key
 def encrypt(M, N, e):
@@ -65,3 +75,9 @@ e = generate_e(phi)
 print('e is:', e)
 
 public_key = [N, e]
+
+print("RSA Keys have been Generated")
+print("1. A public user")
+print("2. The owner of the keys") 
+print("3. Exit program")
+choose_option(input())
