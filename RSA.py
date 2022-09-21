@@ -78,13 +78,34 @@ def create_Private_Key(phi,e):
     d = modular_inverse(e,phi)
     return d
 
+#Simply display a prompt for user input of the message portion of signature
 def getString():
     Sinput = input("Please type in a string: ")
     return Sinput
 
+#Will create the signature using the input message and private key
+def creat_signature(Sinput, d, n):
+    Sinput_in_ascii = () #<-- parenthesis is a placeholder, delete when uncomment --> #Sinput_in_numeric(Sinput)
+    signed = pow(Sinput_in_ascii,d,n)
+    print("Signature created succesffuly.")
+    return signed
+
+#Authenticates the digital signature 
+def authenticate_signature(signature, n, e, Sinput_in_ascii):
+    message = pow(signature, e, n)
+    print("Message from signature: ", message)
+    print("Original message: ", Sinput_in_ascii)
+    if message == Sinput_in_ascii:
+        print("Signature is authentic.")
+        return True
+    else:
+        print("Signature is NOT authentic!")
+        return False
+
 
 #Create our list of possible candidate prime numbers
 candidates = create_candidates()
+
 
 #Assign our return variables to p and q as they should be
 p, q = fermats_theorum(candidates)
