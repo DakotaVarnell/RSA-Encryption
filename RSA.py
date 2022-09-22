@@ -67,10 +67,10 @@ a = True
 encryption_list = []
 signature_list = []
 signature_validity = True
+print("RSA Keys Have Been Generated.")
 
 while(a):
-    print("RSA Keys Have Been Generated.")
-    print("Please Select Your User Type:")
+    print("\nPlease Select Your User Type:")
     print("\t1. A public user")
     print("\t2. The owner of the keys")
     print("\t3. Exit program")
@@ -80,24 +80,24 @@ while(a):
 
     match choice:
         case 1:
-            print("As a public user, what would you like to do?")
-            print("\t1. Send an encrypted message " )
-            print("\t2. Authenticate a digital signature ")
-            print("\t3. Exit")
-            print("Choose One: ", end = "")
-            choice_case_1= int(input())
-
             b = True
             
             while(b):
-                    match choice_case_1:
+                
+                print("\nAs a public user, what would you like to do?")
+                print("\t1. Send an encrypted message " )
+                print("\t2. Authenticate a digital signature ")
+                print("\t3. Exit")
+                print("Choose One: ", end = "")
+                choice_case_1 = int(input())
+
+
+                match choice_case_1:
                         case 1:
-                            a = False
                             our_string = (input("Enter a message: "))
                             #this is where our conversion function needs to be called
                             #this is where our encryption function needs to be called on our converted string
                             print("Message encrypted and sent")
-                            b = False
                         case 2:
                             if len(signature_list) == 0:
                                 print("There are no signatures to authenticate.")
@@ -111,11 +111,10 @@ while(a):
                                         print("Signature is valid.")
                                     else:
                                         print("Signature is not valid")
-                            b = False
                         case 3:
                             b = False
         case 2:
-            print("As the owner of the keys, what would you like to do?")
+            print("\nAs the owner of the keys, what would you like to do?")
             print("\t1. Decrypt a received message " )
             print("\t2. Digitally sign a message ")
             print("\t3. Exit")
@@ -137,13 +136,15 @@ while(a):
                                 if choose_message == i:
                                     #decrypt the message at encryption_list[i]
                                     print("Decrypted Message: " + "decrypted_message")
-                                    c = False
+                            c = False
                         case 2:
                             message = input("Enter a message: ")
                             #sign our message and send it
+                            print("Message signed and sent")
                             c = False
                         case 3:
                             c = False
         case 3:
             print("Bye for Now!")
+            a = False
 
