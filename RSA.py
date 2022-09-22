@@ -40,61 +40,12 @@ def generate_e(phi_):
                 continue
 
     return list_of_e
-
-# def print_options():
-#     print("RSA Keys Have Been Generated.")
-#     print("Please Select Your User Type:")
-#     print("\t1. A public user")
-#     print("\t2. The owner of the keys")
-#     print("\t3. Exit program")
-#     print("Enter Your Choice: ", end = '')
-
-
-# def choose_option():
-#     a = True
-#     while(a):
-#         print("RSA Keys Have Been Generated.")
-#         print("Please Select Your User Type:")
-#         print("\t1. A public user")
-#         print("\t2. The owner of the keys")
-#         print("\t3. Exit program")
-#         print("Enter Your Choice: ", end = '')
-
-#         choice = int(input())
-
-#         match choice:
-#             case 1:
-#                 choice_case_1= int(input())
-#                 print("As a public user, what would you like to do?")
-#                 print("\t1. Send an encrypted message " )
-#                 print("\t2. Authenticate a digital signature ")
-#                 print("\t3. Exit")
-
-#                 match choice_case_1:
-#                     case 1:
-#                         a = False
-#                         return(input("Enter a message: "))
-#                     case 2:
-
-#                     case 3:
-
-
-#             case 2:
-#                 return "two"
-#             case 3:
-#                 return "three"
-#             case default:
-#                 return "something"
- 
-    
+     
 
 #M is the message to encrypt
 #N and e are the public key
 def encrypt(M, N, e):
     return pow(M, e, N)
-
-    
-
 
 
 #Create our list of possible candidate prime numbers
