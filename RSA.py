@@ -119,6 +119,12 @@ def authenticate_signature(signature, n, e, Sinput_in_ascii):
     else:
         return False
 
+def list_to_int(numList):         
+    s = map(str, numList)   
+    s = ''.join(s)          
+    s = int(s)              
+    return s
+
 
 
 #Create our list of possible candidate prime numbers
@@ -223,7 +229,8 @@ while(a):
                     case 2:
                         message = input("Enter a message: ")
                         message = message_to_ascii(message)
-                        signature_list.append(int(creat_signature(message, d, N)))
+                        message = list_to_int(message)
+                        signature_list.append(creat_signature(int(message), d, N))
                         print("Message signed and sent")
                     case 3:
                         c = False
