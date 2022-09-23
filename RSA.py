@@ -28,15 +28,38 @@ def fermats_theorem(candidates = []):
     q = primes[1]
     return(p, q)
 
-#creates N
-def createN(p,q):
-    n = p *q
-    return n
+#the requirements for e are that it must be less than phi and it must be relatively prime to phi
+def generate_e(phi):
+    e_is_empty = True
+    while(e_is_empty):
+        x = random.randint(2, phi-1) #e must be in the range of phi
+        if math.gcd(x, phi) == 1: #if e and phi are relatively prime, they're gcd must be 1
+            e_ = x
+            e_is_empty = False
+        else:
+            continue
 
-#creates what Phi would be
-def createPhi(p,q):
-    phi = (p -1)*(q-1) 
-    return phi
+    return e_
+
+#M is the message (in ASCII) to encrypt
+#N and e are the public key
+def encrypt(M, e, N):
+    encryted_message = []
+    for i in M:
+        encryted_message.append(pow(i, e, N))
+
+    return encryted_message
+        
+
+#this takes each individual character and finds its ASCII correspondence
+#it then adds it to the list message_in_ascii
+def message_to_ascii(message_in_char):
+    message_in_ascii = []
+    message_in_char = message_in_char.upper()
+    for i in message_in_char:
+        message_in_ascii.append(ord(i))
+
+    return message_in_ascii
 
 #Euclid's algorithm for finding gcd
 def eagcd(a, b):
@@ -84,77 +107,45 @@ def getString():
 
 #Will create the signature using the input message and private key
 def creat_signature(Sinput, d, n):
-    Sinput_in_ascii = () #<-- parenthesis is a placeholder, delete when uncomment --> #Sinput_in_numeric(Sinput)
+    Sinput_in_ascii = (Sinput) #<-- parenthesis is a placeholder, delete when uncomment --> #Sinput_in_numeric(Sinput)
     signed = pow(Sinput_in_ascii,d,n)
-    print("Signature created succesffuly.")
     return signed
 
 #Authenticates the digital signature 
 def authenticate_signature(signature, n, e, Sinput_in_ascii):
     message = pow(signature, e, n)
-    print("Message from signature: ", message)
-    print("Original message: ", Sinput_in_ascii)
     if message == Sinput_in_ascii:
-        print("Signature is authentic.")
         return True
     else:
-        print("Signature is NOT authentic!")
         return False
 
-
-#the requirements for e are that it must be less than phi and it must be relatively prime to phi
-def generate_e(phi_):
-    list_of_e = [] #a list of possible values for e
-    while len(list_of_e) < 1:
-        for i in range(20): #20 chances at finding phi - we can change this to find only one value later on
-            x = random.randint(2, phi-1)
-            if math.gcd(x, phi) == 1: #if e and phi are relatively prime, they're gcd must be 1
-                list_of_e.append(x)
-            else:
-                continue
-
-    return list_of_e
-     
-
-#M is the message (in ASCII) to encrypt
-#N and e are the public key
-def encrypt(M, e, N):
-    encryted_message = []
-    for i in M:
-        encryted_message.append(pow(i, e, N))
-
-    return encryted_message
-        
-
-#this takes each individual character and finds its ASCII correspondence
-#it then adds it to the list message_in_ascii
-def message_to_ascii(message_in_char):
-    message_in_ascii = []
-    message_in_char = message_in_char.upper()
-    for i in message_in_char:
-        message_in_ascii.append(ord(i))
-
-    return message_in_ascii
 
 
 #Create our list of possible candidate prime numbers
 candidates = create_candidates()
 
 #Assign our return variables to p and q as they should be
-
 p, q = fermats_theorem(candidates)
 
+#Create our N
 N = p*q
+
+#Create our phi
 phi = (p-1)*(q-1)
 
+#Create our e
 e = generate_e(phi)
 
+#Generate our public keys
 public_key = [N, e]
+
+#Generate d
+d = create_Private_Key(phi, e)
 
 #Our frontend begins here
 a = True
-encryption_list = ["String", "String2"]
-signature_list = ["Ss", "Dd"]
+encryption_list = []
+signature_list = []
 signature_validity = True
 print("RSA Keys Have Been Generated.")
 
@@ -184,8 +175,8 @@ while(a):
                 match choice_case_1:
                         case 1:
                             our_string = (input("Enter a message: "))
-                            #this is where our conversion function needs to be called
-                            #this is where our encryption function needs to be called on our converted string
+                            message_to_encrypt = message_to_ascii(our_string) #the inputted string is transformed to ASCII 
+                            encryption_list.append(encrypt(message_to_encrypt,e,N)) #message encrypted
                             print("Message encrypted and sent")
                         case 2:
                             if len(signature_list) == 0:
@@ -229,12 +220,11 @@ while(a):
                             if choose_message == i + 1:
                                 #decrypt the message at encryption_list[i]
                                 print("Decrypted Message: " + "decrypted_message")
-                        #c = False
                     case 2:
                         message = input("Enter a message: ")
-                        #sign our message and send it
+                        message = message_to_ascii(message)
+                        signature_list.append(int(creat_signature(message, d, N)))
                         print("Message signed and sent")
-                        #c = False
                     case 3:
                         c = False
         case 3:
