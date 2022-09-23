@@ -49,6 +49,23 @@ def encrypt(M, e, N):
         encryted_message.append(pow(i, e, N))
 
     return encryted_message
+
+def decrypt(C, d, N):
+    decrypted_message = ""
+    for i in C:
+        element_in_ascii = (pow(i, d, N))
+        decrypted_message += chr(element_in_ascii)
+
+    return decrypted_message
+
+#M is the message (in ASCII) to encrypt
+#N and e are the public key
+def create_digital_signature(M, d, N):
+    encryted_message = []
+    for i in M:
+        encryted_message.append(pow(i, e, N))
+
+    return encryted_message
         
 
 #this takes each individual character and finds its ASCII correspondence
@@ -105,26 +122,49 @@ def getString():
     Sinput = input("Please type in a string: ")
     return Sinput
 
-#Will create the signature using the input message and private key
-def creat_signature(Sinput, d, n):
-    Sinput_in_ascii = (Sinput) #<-- parenthesis is a placeholder, delete when uncomment --> #Sinput_in_numeric(Sinput)
-    signed = pow(Sinput_in_ascii,d,n)
-    return signed
 
 #Authenticates the digital signature 
-def authenticate_signature(signature, n, e, Sinput_in_ascii):
-    message = pow(signature, e, n)
-    if message == Sinput_in_ascii:
+def authenticate_signature(signature, n, e, plaintext, index):
+    
+    check_signature = []
+    plaintext_sig = []
+    j = 0
+    #Convert the current message of index chosen to list of ASCII
+    for i in range(len(plaintext[index - 1][j])):
+        plaintext = message_to_ascii(plaintext[i])
+
+    match = 0
+
+    for i in range(len(signature)):
+        if(i + 1 == index):
+            for j in range(len(signature[i])):
+                char_signature = pow(signature[i][j], e, n)
+                plaintext_sig = pow(plaintext[i], e, n)
+                check_signature.append(char_signature)
+
+    print(check_signature)
+    print(plaintext_sig)
+    #if len of characters are different it is not valid
+    # if (len(check_signature) != len(input_in_ascii)):
+    #         return False
+
+    for i in range(len(check_signature)):
+        if(check_signature[i] == plaintext[i]):
+            match += 1
+        else:
+            return False
+    if(match == len(check_signature)):
         return True
-    else:
-        return False
+
+
+
+
 
 def list_to_int(numList):         
     s = map(str, numList)   
     s = ''.join(s)          
     s = int(s)              
     return s
-
 
 
 #Create our list of possible candidate prime numbers
@@ -151,6 +191,7 @@ d = create_Private_Key(phi, e)
 #Our frontend begins here
 a = True
 encryption_list = []
+plaintext_signature_list = []
 signature_list = []
 signature_validity = True
 print("RSA Keys Have Been Generated.")
@@ -185,14 +226,15 @@ while(a):
                             encryption_list.append(encrypt(message_to_encrypt,e,N)) #message encrypted
                             print("Message encrypted and sent")
                         case 2:
-                            if len(signature_list) == 0:
+                            if len(plaintext_signature_list) == 0:
                                 print("There are no signatures to authenticate.")
                             else:
                                 print("The following messages are available: ")
-                                for i in range(len(signature_list)):
-                                    print(str(i + 1) + ". " + str(signature_list[i]))
+                                for i in range(len(plaintext_signature_list)):
+                                    print(str(i + 1) + ". " + str(plaintext_signature_list[i]))
                                 print("Choose One: ", end = "")
                                 choose_message = int(input())
+                                signature_validity = authenticate_signature(signature_list, N, e, plaintext_signature_list, choose_message)
                                     
                                 if signature_validity == True:
                                     print("Signature is valid.")
@@ -224,13 +266,13 @@ while(a):
 
                         for i in range(len(encryption_list)):
                             if choose_message == i + 1:
-                                #decrypt the message at encryption_list[i]
-                                print("Decrypted Message: " + "decrypted_message")
+                                decrypted_message = decrypt(encryption_list[i], d, N)
+                                print("Decrypted Message: " + decrypted_message)
                     case 2:
                         message = input("Enter a message: ")
+                        plaintext_signature_list.append(message)
                         message = message_to_ascii(message)
-                        message = list_to_int(message)
-                        signature_list.append(creat_signature(int(message), d, N))
+                        signature_list.append(create_digital_signature(message, d, N))
                         print("Message signed and sent")
                     case 3:
                         c = False
