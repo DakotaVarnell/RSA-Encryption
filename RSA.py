@@ -49,6 +49,14 @@ def encrypt(M, e, N):
         encryted_message.append(pow(i, e, N))
 
     return encryted_message
+
+def decrypt(C, d, N):
+    decrypted_message = ""
+    for i in C:
+        element_in_ascii = (pow(i, d, N))
+        decrypted_message += chr(element_in_ascii)
+
+    return decrypted_message
         
 
 #this takes each individual character and finds its ASCII correspondence
@@ -60,6 +68,29 @@ def message_to_ascii(message_in_char):
         message_in_ascii.append(ord(i))
 
     return message_in_ascii
+
+#Euclid's extended algorithm that uses mod inverse
+def eeagcd(a, b):
+    if a == 0:
+            return (b, 0, 1)
+    (g, x1, y1) = eeagcd(b % a, a)
+    x = y1 - (b//a) * x1
+    y = x1
+
+    return g,x,y
+
+#Mod inverse to find d
+def modular_inverse(a,b):
+    g,x,y = eeagcd(a,b)
+    if g != 1:
+        raise Exception("No modular inverse")
+    else: 
+        return x % b 
+
+#uses eeagcd to create the private key
+def create_Private_Key(phi,e):
+    d = modular_inverse(e,phi)
+    return d
 
 
 #Create our list of possible candidate prime numbers
@@ -76,88 +107,96 @@ e = generate_e(phi)
 
 public_key = [N, e]
 
-#Our frontend begins here
-a = True
-encryption_list = []
-signature_list = []
-signature_validity = True
-print("RSA Keys Have Been Generated.")
+d = create_Private_Key(phi, e)
+print(d)
 
-while(a):
-    print("\nPlease Select Your User Type:")
-    print("\t1. A public user")
-    print("\t2. The owner of the keys")
-    print("\t3. Exit program")
-    print("Enter Your Choice: ", end = '')
+h = message_to_ascii("hello")
+h = encrypt(h, e, N)
+h = decrypt(h, d, N)
+print(h) #it works :)
 
-    choice = int(input())
+# #Our frontend begins here
+# a = True
+# encryption_list = []
+# signature_list = []
+# signature_validity = True
+# print("RSA Keys Have Been Generated.")
 
-    match choice:
-        case 1:
-            b = True
+# while(a):
+#     print("\nPlease Select Your User Type:")
+#     print("\t1. A public user")
+#     print("\t2. The owner of the keys")
+#     print("\t3. Exit program")
+#     print("Enter Your Choice: ", end = '')
+
+#     choice = int(input())
+
+#     match choice:
+#         case 1:
+#             b = True
             
-            while(b):
+#             while(b):
                 
-                print("\nAs a public user, what would you like to do?")
-                print("\t1. Send an encrypted message " )
-                print("\t2. Authenticate a digital signature ")
-                print("\t3. Exit")
-                print("Choose One: ", end = "")
-                choice_case_1 = int(input())
+#                 print("\nAs a public user, what would you like to do?")
+#                 print("\t1. Send an encrypted message " )
+#                 print("\t2. Authenticate a digital signature ")
+#                 print("\t3. Exit")
+#                 print("Choose One: ", end = "")
+#                 choice_case_1 = int(input())
 
 
-                match choice_case_1:
-                        case 1:
-                            our_string = (input("Enter a message: "))
-                            message_to_encrypt = message_to_ascii(our_string) #the inputted string is transformed to ASCII 
-                            encryption_list.append(encrypt(message_to_encrypt,e,N)) #message encrypted
-                            print("Message encrypted and sent")
-                        case 2:
-                            if len(signature_list) == 0:
-                                print("There are no signatures to authenticate.")
-                            else:
-                                print("The following messages are available: ")
-                                for i in range(len(signature_list)):
-                                    print(i + ". " + signature_list[i])
-                                    choose_message = int(input())
+#                 match choice_case_1:
+#                         case 1:
+#                             our_string = (input("Enter a message: "))
+#                             message_to_encrypt = message_to_ascii(our_string) #the inputted string is transformed to ASCII 
+#                             encryption_list.append(encrypt(message_to_encrypt,e,N)) #message encrypted
+#                             print("Message encrypted and sent")
+#                         case 2:
+#                             if len(signature_list) == 0:
+#                                 print("There are no signatures to authenticate.")
+#                             else:
+#                                 print("The following messages are available: ")
+#                                 for i in range(len(signature_list)):
+#                                     print(i + ". " + signature_list[i])
+#                                     choose_message = int(input())
                                     
-                                    if signature_validity == True:
-                                        print("Signature is valid.")
-                                    else:
-                                        print("Signature is not valid")
-                        case 3:
-                            b = False
-        case 2:
-            print("\nAs the owner of the keys, what would you like to do?")
-            print("\t1. Decrypt a received message " )
-            print("\t2. Digitally sign a message ")
-            print("\t3. Exit")
-            print("Choose One: ", end = "")
-            choice_case_2 = int(input())
+#                                     if signature_validity == True:
+#                                         print("Signature is valid.")
+#                                     else:
+#                                         print("Signature is not valid")
+#                         case 3:
+#                             b = False
+#         case 2:
+#             print("\nAs the owner of the keys, what would you like to do?")
+#             print("\t1. Decrypt a received message " )
+#             print("\t2. Digitally sign a message ")
+#             print("\t3. Exit")
+#             print("Choose One: ", end = "")
+#             choice_case_2 = int(input())
 
-            c = True
+#             c = True
             
-            while(c):
-                    match choice_case_2:
-                        case 1:
-                            print("The following messages are available")
+#             while(c):
+#                     match choice_case_2:
+#                         case 1:
+#                             print("The following messages are available")
 
-                            for i in range(len(encryption_list)):
-                                print(i + ". " + "length = " + len(encryption_list[i]))
-                                choose_message = int(input())
+#                             for i in range(len(encryption_list)):
+#                                 print(i + ". " + "length = " + len(encryption_list[i]))
+#                                 choose_message = int(input())
 
-                            for i in range(len(encryption_list)):
-                                if choose_message == i:
-                                    #decrypt the message at encryption_list[i]
-                                    print("Decrypted Message: " + "decrypted_message")
-                            c = False
-                        case 2:
-                            message = input("Enter a message: ")
-                            #sign our message and send it
-                            print("Message signed and sent")
-                            c = False
-                        case 3:
-                            c = False
-        case 3:
-            print("Bye for Now!")
-            a = False
+#                             for i in range(len(encryption_list)):
+#                                 if choose_message == i:
+#                                     #decrypt the message at encryption_list[i]
+#                                     print("Decrypted Message: " + "decrypted_message")
+#                             c = False
+#                         case 2:
+#                             message = input("Enter a message: ")
+#                             #sign our message and send it
+#                             print("Message signed and sent")
+#                             c = False
+#                         case 3:
+#                             c = False
+#         case 3:
+#             print("Bye for Now!")
+#             a = False
