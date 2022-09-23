@@ -41,6 +41,39 @@ def generate_e(phi):
 
     return e_
 
+#Euclid's extended algorithm that uses mod inverse
+def eeagcd(a, b):
+    if a == 0:
+            return (b, 0, 1)
+    (g, x1, y1) = eeagcd(b % a, a)
+    x = y1 - (b//a) * x1
+    y = x1
+
+    return g,x,y
+
+#Mod inverse
+def modular_inverse(a,b):
+    g,x,y = eeagcd(a,b)
+    if g != 1:
+        raise Exception("No modular inverse")
+    else: 
+        return x % b    
+
+#uses eeagcd to create the private key
+def generate_d(phi,e):
+    d = modular_inverse(e,phi)
+    return d
+
+#this takes each individual character and finds its ASCII correspondence
+#it then adds it to the list message_in_ascii
+def message_to_ascii(message_in_char):
+    message_in_ascii = []
+    message_in_char = message_in_char.upper()
+    for i in message_in_char:
+        message_in_ascii.append(ord(i))
+
+    return message_in_ascii
+
 #M is the message (in ASCII) to encrypt
 #N and e are the public key
 def encrypt(M, e, N):
@@ -67,62 +100,6 @@ def create_digital_signature(M, d, N):
 
     return encryted_message
         
-
-#this takes each individual character and finds its ASCII correspondence
-#it then adds it to the list message_in_ascii
-def message_to_ascii(message_in_char):
-    message_in_ascii = []
-    message_in_char = message_in_char.upper()
-    for i in message_in_char:
-        message_in_ascii.append(ord(i))
-
-    return message_in_ascii
-
-#Euclid's algorithm for finding gcd
-def eagcd(a, b):
-    if b == 0:
-        return a
-    else:
-        return eagcd(b, a % b)
-
-#Euclid's extended algorithm that uses mod inverse
-def eeagcd(a, b):
-    if a == 0:
-            return (b, 0, 1)
-    (g, x1, y1) = eeagcd(b % a, a)
-    x = y1 - (b//a) * x1
-    y = x1
-
-    return g,x,y
-
-#Mod inverse
-def modular_inverse(a,b):
-    g,x,y = eeagcd(a,b)
-    if g != 1:
-        raise Exception("No modular inverse")
-    else: 
-        return x % b    
-
-#Uses eagcd to create a public key
-def create_public_key(phi):
-    e = random.randint(2,phi)
-    i = eagcd(phi,e)
-    while i != 1:
-        e = random.randint(2,phi)
-        i = eagcd(phi, e)
-    return e
-
-#uses eeagcd to create the private key
-def create_Private_Key(phi,e):
-    d = modular_inverse(e,phi)
-    return d
-
-#Simply display a prompt for user input of the message portion of signature
-def getString():
-    Sinput = input("Please type in a string: ")
-    return Sinput
-
-
 #Authenticates the digital signature 
 def authenticate_signature(encrypted_signature, e, N, plaintext, index):
 
@@ -134,7 +111,6 @@ def authenticate_signature(encrypted_signature, e, N, plaintext, index):
         return True
     else: 
         return False
-
 
 
 #Create our list of possible candidate prime numbers
@@ -156,7 +132,7 @@ e = generate_e(phi)
 public_key = [N, e]
 
 #Generate d
-d = create_Private_Key(phi, e)
+d = generate_d(phi, e)
 
 #Our frontend begins here
 a = True
