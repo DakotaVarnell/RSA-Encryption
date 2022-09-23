@@ -30,14 +30,16 @@ def fermats_theorem(candidates = []):
 
 #the requirements for e are that it must be less than phi and it must be relatively prime to phi
 def generate_e(phi):
-        for i in range(1):
-            x = random.randint(2, phi-1)
-            if math.gcd(x, phi) == 1: #if e and phi are relatively prime, they're gcd must be 1
-                e_ = x
-            else:
-                continue
+    e_is_empty = True
+    while(e_is_empty):
+        x = random.randint(2, phi-1) #e must be in the range of phi
+        if math.gcd(x, phi) == 1: #if e and phi are relatively prime, they're gcd must be 1
+            e_ = x
+            e_is_empty = False
+        else:
+            continue
 
-        return e_
+    return e_
 
 #M is the message (in ASCII) to encrypt
 #N and e are the public key
@@ -59,25 +61,103 @@ def message_to_ascii(message_in_char):
 
     return message_in_ascii
 
-    
-
-
 
 #Create our list of possible candidate prime numbers
 candidates = create_candidates()
 
 #Assign our return variables to p and q as they should be
+
 p, q = fermats_theorem(candidates)
-print('The value of p is: ', p, 'The value of q is: ', q)
 
 N = p*q
 phi = (p-1)*(q-1)
 
 e = generate_e(phi)
-print('e is:', e)
 
 public_key = [N, e]
 
-h = message_to_ascii('Hello')
-print(h)
-print(encrypt(h, e, N))
+#Our frontend begins here
+a = True
+encryption_list = []
+signature_list = []
+signature_validity = True
+print("RSA Keys Have Been Generated.")
+
+while(a):
+    print("\nPlease Select Your User Type:")
+    print("\t1. A public user")
+    print("\t2. The owner of the keys")
+    print("\t3. Exit program")
+    print("Enter Your Choice: ", end = '')
+
+    choice = int(input())
+
+    match choice:
+        case 1:
+            b = True
+            
+            while(b):
+                
+                print("\nAs a public user, what would you like to do?")
+                print("\t1. Send an encrypted message " )
+                print("\t2. Authenticate a digital signature ")
+                print("\t3. Exit")
+                print("Choose One: ", end = "")
+                choice_case_1 = int(input())
+
+
+                match choice_case_1:
+                        case 1:
+                            our_string = (input("Enter a message: "))
+                            message_to_encrypt = message_to_ascii(our_string) #the inputted string is transformed to ASCII 
+                            encryption_list.append(encrypt(message_to_encrypt,e,N)) #message encrypted
+                            print("Message encrypted and sent")
+                        case 2:
+                            if len(signature_list) == 0:
+                                print("There are no signatures to authenticate.")
+                            else:
+                                print("The following messages are available: ")
+                                for i in range(len(signature_list)):
+                                    print(i + ". " + signature_list[i])
+                                    choose_message = int(input())
+                                    
+                                    if signature_validity == True:
+                                        print("Signature is valid.")
+                                    else:
+                                        print("Signature is not valid")
+                        case 3:
+                            b = False
+        case 2:
+            print("\nAs the owner of the keys, what would you like to do?")
+            print("\t1. Decrypt a received message " )
+            print("\t2. Digitally sign a message ")
+            print("\t3. Exit")
+            print("Choose One: ", end = "")
+            choice_case_2 = int(input())
+
+            c = True
+            
+            while(c):
+                    match choice_case_2:
+                        case 1:
+                            print("The following messages are available")
+
+                            for i in range(len(encryption_list)):
+                                print(i + ". " + "length = " + len(encryption_list[i]))
+                                choose_message = int(input())
+
+                            for i in range(len(encryption_list)):
+                                if choose_message == i:
+                                    #decrypt the message at encryption_list[i]
+                                    print("Decrypted Message: " + "decrypted_message")
+                            c = False
+                        case 2:
+                            message = input("Enter a message: ")
+                            #sign our message and send it
+                            print("Message signed and sent")
+                            c = False
+                        case 3:
+                            c = False
+        case 3:
+            print("Bye for Now!")
+            a = False
