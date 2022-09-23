@@ -124,50 +124,18 @@ def getString():
 
 
 #Authenticates the digital signature 
-def authenticate_signature(signature, n, e, plaintext, index):
+def authenticate_signature(encrypted_signature, e, N, plaintext, index):
 
-    print(signature)
-    print(plaintext)
-    #Check signature is going to be the created list we check against
-    check_signature = []
+    decrypted_signature = decrypt(encrypted_signature[index - 1], e, N)
+    text_to_compare = plaintext[index - 1]
 
-    #Plaintext signature is going to be our list of plaintext chars converted to ascii
-    # plaintext_sig = []
-
-    #j might not be needed, unsure
-    j = 0
-
-    #Convert the current message of index chosen to list of ASCII
-    for i in range(len(plaintext[index - 1][j])):
-        plaintext = message_to_ascii(plaintext[i])
-
-    #Match variable that will count the number of chars that match between our check signature list and plaintext list
-    match = 0
-
-    #iterate through the length of signature(the number of sublists within the list)
-    for i in range(len(signature)):
-        #if current index is == the index of the message that the user chooses
-        if(i + 1 == index):
-            #iterate through the sublist at the chosen messages index
-            for j in range(len(signature[i])):
-                #decrypting signature
-                char_signature = pow(signature[i][j], e, n)
-                # plaintext_sig = pow(plaintext[i], e, n)
-                check_signature.append(char_signature)
-
-    # print(check_signature)
-    # print(plaintext)
-    # print(plaintext_sig)
-
-    #signature verification begins
-    for i in range(len(check_signature)): #decrypted signature
-        if(i + 1 == index):
-            if(check_signature[i] == plaintext[i]):
-                match += 1
-            else:
-                return False
-    if(match == len(check_signature)):
+    print(decrypted_signature)
+    if decrypted_signature == text_to_compare.upper():
         return True
+    else: 
+        return False
+
+
 
 
 
@@ -247,7 +215,7 @@ while(a):
                                     print(str(i + 1) + ". " + str(plaintext_signature_list[i]))
                                 print("Choose One: ", end = "")
                                 choose_message = int(input())
-                                signature_validity = authenticate_signature(signature_list, N, e, plaintext_signature_list, choose_message)
+                                signature_validity = authenticate_signature(signature_list, e, N, plaintext_signature_list, choose_message)
                                     
                                 if signature_validity == True:
                                     print("Signature is valid.")
