@@ -63,7 +63,7 @@ def decrypt(C, d, N):
 def create_digital_signature(M, d, N):
     encryted_message = []
     for i in M:
-        encryted_message.append(pow(i, e, N))
+        encryted_message.append(pow(i, d, N))
 
     return encryted_message
         
@@ -125,34 +125,47 @@ def getString():
 
 #Authenticates the digital signature 
 def authenticate_signature(signature, n, e, plaintext, index):
-    
+
+    print(signature)
+    print(plaintext)
+    #Check signature is going to be the created list we check against
     check_signature = []
-    plaintext_sig = []
+
+    #Plaintext signature is going to be our list of plaintext chars converted to ascii
+    # plaintext_sig = []
+
+    #j might not be needed, unsure
     j = 0
+
     #Convert the current message of index chosen to list of ASCII
     for i in range(len(plaintext[index - 1][j])):
         plaintext = message_to_ascii(plaintext[i])
 
+    #Match variable that will count the number of chars that match between our check signature list and plaintext list
     match = 0
 
+    #iterate through the length of signature(the number of sublists within the list)
     for i in range(len(signature)):
+        #if current index is == the index of the message that the user chooses
         if(i + 1 == index):
+            #iterate through the sublist at the chosen messages index
             for j in range(len(signature[i])):
+                #decrypting signature
                 char_signature = pow(signature[i][j], e, n)
-                plaintext_sig = pow(plaintext[i], e, n)
+                # plaintext_sig = pow(plaintext[i], e, n)
                 check_signature.append(char_signature)
 
-    print(check_signature)
-    print(plaintext_sig)
-    #if len of characters are different it is not valid
-    # if (len(check_signature) != len(input_in_ascii)):
-    #         return False
+    # print(check_signature)
+    # print(plaintext)
+    # print(plaintext_sig)
 
-    for i in range(len(check_signature)):
-        if(check_signature[i] == plaintext[i]):
-            match += 1
-        else:
-            return False
+    #signature verification begins
+    for i in range(len(check_signature)): #decrypted signature
+        if(i + 1 == index):
+            if(check_signature[i] == plaintext[i]):
+                match += 1
+            else:
+                return False
     if(match == len(check_signature)):
         return True
 
