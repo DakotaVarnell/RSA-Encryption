@@ -190,7 +190,7 @@ while(a):
                             else:
                                 print("The following messages are available: ")
                                 for i in range(len(signature_list)):
-                                    print(str(i + 1) + ". " + signature_list[i])
+                                    print(str(i + 1) + ". " + str(signature_list[i]))
                                 print("Choose One: ", end = "")
                                 choose_message = int(input())
                                     
