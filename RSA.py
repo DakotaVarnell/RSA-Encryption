@@ -137,17 +137,6 @@ def authenticate_signature(encrypted_signature, e, N, plaintext, index):
 
 
 
-
-
-
-
-def list_to_int(numList):         
-    s = map(str, numList)   
-    s = ''.join(s)          
-    s = int(s)              
-    return s
-
-
 #Create our list of possible candidate prime numbers
 candidates = create_candidates()
 
