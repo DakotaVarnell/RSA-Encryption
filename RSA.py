@@ -1,6 +1,7 @@
 import random
 import math
 
+#Create the possible prime number candidates between 1M and 10M to be used in our primality tests
 def create_candidates(n = 1000000):
     candidates = []
     x = 0
@@ -10,6 +11,7 @@ def create_candidates(n = 1000000):
             candidates.append(x)
     return candidates
 
+#Fermat's Little theorem that accepts a list of possible prime numbers
 def fermats_theorem(candidates = []):
     primes = []
     n = 10
@@ -23,7 +25,8 @@ def fermats_theorem(candidates = []):
                 if pow(a , i - 1, i) == 1: #if the number passes Fermat's Test then add it to primes
                     primes.append(i)
                 break
-
+    
+    #Set our p and q to our two prime numbers and return them
     p = primes[0]
     q = primes[1]
     return(p, q)
@@ -51,7 +54,7 @@ def eeagcd(a, b):
 
     return g,x,y
 
-#Mod inverse
+#Modular inverse
 def modular_inverse(a,b):
     g,x,y = eeagcd(a,b)
     if g != 1:
@@ -101,12 +104,15 @@ def create_digital_signature(M, d, N):
     return encryted_message
         
 #Authenticates the digital signature 
+#Accepts the encrypted signature, e, N, the plaintext and the representative number(index) of the chosen signature
 def authenticate_signature(encrypted_signature, e, N, plaintext, index):
 
+    #send our encrypted signature into our decrypt function
     decrypted_signature = decrypt(encrypted_signature[index - 1], e, N)
+    #Text we are comparing our decrytped signature to
     text_to_compare = plaintext[index - 1]
 
-    print(decrypted_signature)
+    #If decrypted signature matches our plaintext message then we return True, else return False
     if decrypted_signature == text_to_compare.upper():
         return True
     else: 
@@ -142,6 +148,7 @@ signature_list = []
 signature_validity = True
 print("RSA Keys Have Been Generated.")
 
+#While a is true display our prompt for the user which controls the outside most loop
 while(a):
     print("\nPlease Select Your User Type:")
     print("\t1. A public user")
@@ -151,10 +158,14 @@ while(a):
 
     choice = int(input())
 
+    #Match choice tree that allows for the selection of the proper choice from the previous prompt
     match choice:
+
+        #Case 1 is for the public user
         case 1:
             b = True
             
+            #Second while loop that controls the loop for the public user
             while(b):
                 
                 print("\nAs a public user, what would you like to do?")
@@ -164,34 +175,44 @@ while(a):
                 print("Choose One: ", end = "")
                 choice_case_1 = int(input())
 
-
+                #Match choice tree that allows for the selection of the proper choice from the public user prompt
                 match choice_case_1:
+
+                        #Send encrypted message
                         case 1:
                             our_string = (input("Enter a message: "))
                             message_to_encrypt = message_to_ascii(our_string) #the inputted string is transformed to ASCII 
                             encryption_list.append(encrypt(message_to_encrypt,e,N)) #message encrypted
                             print("Message encrypted and sent")
+
+                        #Authenticate the digital signatures
                         case 2:
-                            if len(plaintext_signature_list) == 0:
+                            if len(plaintext_signature_list) == 0: #if no signatures tell the user
                                 print("There are no signatures to authenticate.")
                             else:
-                                print("The following messages are available: ")
+                                print("The following messages are available: ")#print the messages the user can authenticate
                                 for i in range(len(plaintext_signature_list)):
                                     print(str(i + 1) + ". " + str(plaintext_signature_list[i]))
                                 print("Choose One: ", end = "")
                                 choose_message = int(input())
                                 signature_validity = authenticate_signature(signature_list, e, N, plaintext_signature_list, choose_message)
                                     
+                                #notify the user of the signature validity
                                 if signature_validity == True:
                                     print("Signature is valid.")
                                 else:
                                     print("Signature is not valid")
+
+                        #exit the public user loop
                         case 3:
                             b = False
+
+        #Case 2 is for the owner of the keys
         case 2:
 
             c = True
             
+            #While the user is the owner of the keys continue allowing for the choice to use the below actions
             while(c):
                 print("\nAs the owner of the keys, what would you like to do?")
                 print("\t1. Decrypt a received message " )
@@ -199,29 +220,37 @@ while(a):
                 print("\t3. Exit")
                 print("Choose One: ", end = "")
                 choice_case_2 = int(input())
-                    
+                
+
                 match choice_case_2:
+
+                    #Case 1: Decrypt the received message
                     case 1:
                         print("\nThe following messages are available")
-
-                        for i in range(len(encryption_list)):
+                        for i in range(len(encryption_list)): #print the list of the encrypted messages and their length
                             print(str(i + 1) + ". " + "length = " + str(len(encryption_list[i])))
                         
                         print("Choose One: ", end = "")
                         choose_message = int(input())
 
-                        for i in range(len(encryption_list)):
+                        for i in range(len(encryption_list)): #allow for the decryption of the chosen message and print it
                             if choose_message == i + 1:
                                 decrypted_message = decrypt(encryption_list[i], d, N)
                                 print("Decrypted Message: " + decrypted_message)
+                    
+                    #Case 2: Create a Digital Signature
                     case 2:
-                        message = input("Enter a message: ")
-                        plaintext_signature_list.append(message)
-                        message = message_to_ascii(message)
-                        signature_list.append(create_digital_signature(message, d, N))
+                        message = input("Enter a message: ") #allow for input of our message
+                        plaintext_signature_list.append(message) #append our plaintext message to the plaintext signature list
+                        message = message_to_ascii(message) #convert our plaintext message to ASCII
+                        signature_list.append(create_digital_signature(message, d, N)) #append our digital signature to our list of digital signatures
                         print("Message signed and sent")
+
+                    #Exit the owner of the keys loop
                     case 3:
                         c = False
+
+        #Case 3: Exit the entire program
         case 3:
             print("Bye for Now!")
             a = False
