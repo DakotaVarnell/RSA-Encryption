@@ -86,6 +86,8 @@ def encrypt(M, e, N):
 
     return encryted_message
 
+#C is a ciphered message in the form of a list
+#it first decrpyts the element in ASCII and then changes it to its associated char
 def decrypt(C, d, N):
     decrypted_message = ""
     for i in C:
@@ -95,7 +97,8 @@ def decrypt(C, d, N):
     return decrypted_message
 
 #M is the message (in ASCII) to encrypt
-#N and e are the public key
+#N and d are used as keys 
+#d must be kept private
 def create_digital_signature(M, d, N):
     encryted_message = []
     for i in M:
@@ -254,4 +257,3 @@ while(a):
         case 3:
             print("Bye for Now!")
             a = False
-
